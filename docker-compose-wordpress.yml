@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql/mysql-server:latest
+    container_name: wordpress-db
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: accesa2023
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: accesa2023
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    networks:
+      - wp_network
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress-app
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: accesa2023
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - wp_network
+
+networks:
+  wp_network:
+
+volumes:
+  wp_data:
